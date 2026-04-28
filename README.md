@@ -277,7 +277,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'http://localhost:5000';
+const API = 'http://msce-backend-production.up.railway.app';
 let authHeader = '';
 let allPapers = [];
 let activeTypeFilter = '';
