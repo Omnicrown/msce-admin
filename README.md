@@ -286,24 +286,28 @@ let activeTypeFilter = '';
 async function login(){
   const u = document.getElementById('u').value;
   const p = document.getElementById('p').value;
-  const res = await fetch(`${API}/admin/login`,{
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({username:u,password:p})
-  });
-  const d = await res.json();
-  if(d.success){
-    authHeader = 'Basic ' + btoa(u+':'+p);
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app').style.display='block';
-    loadAll();
-  } else {
-    document.getElementById('login-err').textContent = d.message||'Login failed';
+  if(!u || !p){ 
+    document.getElementById('login-err').textContent = 'Please enter username and password';
+    return;
   }
-}
-function logout(){
-  authHeader='';
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('app').style.display='none';
+  try {
+    const res = await fetch('https://msce-backend-production.up.railway.app/admin/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username:u, password:p})
+    });
+    const d = await res.json();
+    if(d.success){
+      authHeader = 'Basic ' + btoa(u+':'+p);
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('app').style.display='block';
+      loadAll();
+    } else {
+      document.getElementById('login-err').textContent = d.message||'Wrong credentials';
+    }
+  } catch(e) {
+    document.getElementById('login-err').textContent = 'Cannot reach server. Try again.';
+  }
 }
 
 // ── Navigation ─────────────────────────────────────────────────
